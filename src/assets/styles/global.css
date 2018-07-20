@@ -1,0 +1,19 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f3f3f4;
+}
+
+body #app {
+  height: 100%;
+}
+
+body #app h3 {
+  margin-top: 0;
+  color: #324157;
+}

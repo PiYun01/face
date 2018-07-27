@@ -4,10 +4,14 @@
         <el-menu class="el-menu-vertical" background-color="#324157" text-color="#ddd" default-active="device_list"
                 @open="handleOpen" @close="hadnleClose" :collapse="isCollapse" :unique-opened="isUnique" :router="isRouter">
             <div><h3 class="logo">{{isCollapse?'VUE':'AUTO VUE'}}</h3></div>    
-            <el-menu-item index="device_list">
-                <i class="el-icon-menu"></i>
-                <span slot="title">终端管理</span>
-            </el-menu-item>
+            <el-submenu index="1">
+                <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span>终端管理</span>
+                </template>
+                <el-menu-item index="device_list">设备管理</el-menu-item>
+                <el-menu-item index="face_list">人脸库管理</el-menu-item>
+            </el-submenu>
             <el-menu-item index="2">
                 <i class="el-icon-document"></i>
                 <span slot="title">导航二</span>
@@ -98,7 +102,6 @@ export default {
 .el-submenu .el-menu-item {
   padding: 0 20px;
   min-width: 160px;
-  padding-left: 20px !important;
 }
 
 .el-menu-vertical:not(.el-menu--collapse) {

@@ -13,7 +13,9 @@ body #app {
   height: 100%;
 }
 
-body #app h3 {
-  margin-top: 0;
-  color: #324157;
+.breadcrumb-div {
+  padding: 16px 32px 0;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 16px;
 }

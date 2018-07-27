@@ -1,16 +1,13 @@
 <template>
-<div id="nav">
-    <div id="sidebar-wrap">
-        <h3 class="logo">{{isCollapse?'VUE':'AUTO VUE'}}</h3>
-        <el-menu default-active="1-1" background-color="#324157" text-color="#ddd" @open="handleOpen" @close="hadnleClose" :collapse="isCollapse">
-            <el-submenu index="1"> 
-                <template slot="title">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">导航一</span>
-                 </template> 
-                <el-menu-item index="1-1">选项1</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-submenu>
+<div class="sidebar-wrap">
+    <el-container style="height:100vh;">
+        <el-menu class="el-menu-vertical" background-color="#324157" text-color="#ddd" default-active="device_list"
+                @open="handleOpen" @close="hadnleClose" :collapse="isCollapse" :unique-opened="isUnique" :router="isRouter">
+            <div><h3 class="logo">{{isCollapse?'VUE':'AUTO VUE'}}</h3></div>    
+            <el-menu-item index="device_list">
+                <i class="el-icon-menu"></i>
+                <span slot="title">终端管理</span>
+            </el-menu-item>
             <el-menu-item index="2">
                 <i class="el-icon-document"></i>
                 <span slot="title">导航二</span>
@@ -24,18 +21,18 @@
                 <span slot="title">关于作者</span>
             </el-menu-item>
         </el-menu>
-    </div>
-    <div class="toolbar">
-        <el-container>
-            <el-header>
+
+        <el-container >
+             <el-header>
                <el-menu mode="horizontal">
-                   <el-menu-item index="1">
+                   <el-menu-item index="1" style="border:none" @click="handleNav">
                      <i class="iconfont" :class="[isCollapse ? 'icon-zhankaicaidan' : 'icon-shouqicaidan']" ></i>
                    </el-menu-item>
+                
                     <el-submenu index="2" class="header-user-logo">
                         <template slot="title">
                             <img src="../../assets/images/photo.png" style="width: 25px; height: 25px; display: inline-block; vertical-align: middle;">
-                            <span> 蒙奇·D·路飞</span>
+                            <span>{{username}}</span>
                         </template>
                         <el-menu-item index="2-1">个人中心</el-menu-item>
                         <el-menu-item index="2-2">设置</el-menu-item>
@@ -43,12 +40,11 @@
                     </el-submenu>              
                 </el-menu>
             </el-header>
-
             <el-main>
                 <router-view/>
             </el-main>
-        </el-container>
-    </div>
+        </el-container> 
+    </el-container>
 </div>
 </template>
 
@@ -56,43 +52,48 @@
 export default {
     data(){
         return{
-            isCollapse:false
+            isUnique:true,
+            isRouter:true,
+            isCollapse:false,
+            username:localStorage.userName || '蒙奇·D·路飞'
         }
     },
+    computed:{
+        defaultActive: function(){
+			return this.$route.path.replace('/', 'device_list');
+		}
+    },
     methods:{
-        handleOpen(){
-
+        handleOpen(key, keyPath){
+            console.log(key, keyPath);
         },
-        hadnleClose(){
-
+        hadnleClose(key, keyPath){
+            console.log(key, keyPath);
+        },
+        handleNav(){
+           this.isCollapse=!this.isCollapse;
+           console.log(this.isCollapse); 
         }
     }
-    
 }
 </script>
 
 <style scoped>
-#sidebar-wrap {
-  width: 160px;
+.sidebar-wrap {
   height: 100%;
-  position: fixed;
+  width: 100%;
   left: 0;
   top: 0;
   bottom: 0;
-  z-index: 5;
 }
-
-#sidebar-wrap .logo {
+.el-menu-vertical .logo {
   text-align: center;
-  background: #324157;
   padding: 18px 0;
   margin: 0;
   color: #fff;
+  white-space: nowrap;
 }
-.el-menu {
-  width: 100%;
-  height: 100%;
-}
+
 /* 美化左侧导航的留白 */
 .el-submenu .el-menu-item {
   padding: 0 20px;
@@ -100,6 +101,10 @@ export default {
   padding-left: 20px !important;
 }
 
+.el-menu-vertical:not(.el-menu--collapse) {
+  width: 160px;
+  min-height: 400px;
+}
 .toolbar {
   padding-left: 160px;
 }
@@ -107,6 +112,7 @@ export default {
   background-color: #fff;
   color: #333;
   line-height: 60px;
+  padding-left: 0;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 .iconfont {

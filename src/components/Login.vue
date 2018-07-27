@@ -3,12 +3,12 @@
   <div class="login-wrap">
     <h3>Auto View</h3>
     <h3>欢迎使用自动化装逼系统</h3>
-    <el-form ref="form" :model="account" :rules="rules" label-width="0px">
+    <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="0px">
         <el-form-item prop="name">
-          <el-input :placeholder="用户名" v-model="account.name"></el-input>
+          <el-input placeholder="请输入账号" v-model="ruleForm.name"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-            <el-input :placeholder="密码"  v-model="account.password" type="password"></el-input>
+            <el-input placeholder="请输入密码"  v-model="ruleForm.password" type="password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-row type="flex" justify="space-between">
@@ -17,11 +17,10 @@
           </el-row>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="Login('form')">登录</el-button>
+            <el-button type="primary" @click="Login('ruleForm')">登录</el-button>
         </el-form-item>
     </el-form>
   </div>
-
 </div>
    
 </template>
@@ -31,18 +30,17 @@ export default {
     name:'Login',
     data () {
     return  {
-        account: {
-          name: '',
-          pwd: ''
+        ruleForm: {
+          name: localStorage.userInfo,
+          password: localStorage.passwordInfo
         },
-        isMemery: false,
+        isMemery: localStorage.userInfo ? true : false,
         rules: {
           name: [
             {
               required: true,
               message: '请输入账号',
               trigger: 'blur'
-              // validator: checkone
             }
           ],
           password: [
@@ -60,13 +58,50 @@ export default {
       this.$message.warning("密码是695109751！");
     },
     Login(form){
+      var self=this;
       this.$refs[form].validate(valid =>{
         if(valid){
-          this.$message.success("登录成功");
+         this.$axios({
+            url: "admin/login",
+            method: "POST",
+            data: {
+              user_name: this.ruleForm.name,
+              password: this.ruleForm.password
+            }
+         }).then(res =>{
+            if(res.data.status == 1){
+              localStorage.userName = this.ruleForm.name;
+              this.$message({
+                message: '登录成功！',
+                type: 'success',
+                duration: 500,
+                onClose: function () {
+                self.$router.push('device_list');
+                }
+              })
+            }else{
+              this.$message({
+                  type: 'error',
+                  message: res.data.message
+              });
+            }
+          })
         }else{
-          return false;
+          console.log('error submit!!')
+          return false
         }
       });
+    }
+  },  
+  watch: {
+    isMemery(n, o) {
+      if (n) {
+        localStorage.userInfo = this.ruleForm.name;
+        localStorage.passwordInfo = this.ruleForm.password;
+      } else {
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("passwordInfo");
+      }
     }
   }
 }
